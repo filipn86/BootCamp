@@ -3,7 +3,9 @@ package pl.coreservices.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RestController;
 import pl.coreservices.model.web.FileValidator;
+import pl.coreservices.model.web.Producer;
 
+import javax.jms.JMSException;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.List;
@@ -19,7 +21,9 @@ public class FileWatchService {
 
     private FileValidator fileValidator = new FileValidator();
 
-    public void watchDirectoryPath() {
+    public void watchDirectoryPath() throws JMSException {
+
+        Producer prod = new Producer();
 
         Path path = Paths.get(filePath);
         if (!fileValidator.isCorrectDirectory(path)) {
@@ -34,15 +38,19 @@ public class FileWatchService {
             WatchKey key;
             while (true) {
                 key = service.take();
-                for (WatchEvent <?> watchEvent : key.pollEvents()) {
+                for (WatchEvent<?> watchEvent : key.pollEvents()) {
                     String watchedFile = watchEvent.context().toString();
-                    List <String> hashTagList =
+                    List<String> hashTagList =
                             fileValidator.parseFileRows(filePath + "\\" + watchedFile);
-                    hashTagList.forEach(fileValidator::extractHashTags);
+                    //hashTagList.forEach(fileValidator::extractHashTags);
+                    for (String hash : hashTagList){
+                        fileValidator.extractHashTags(hash,prod);
+                    }
                 }
             }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+        }
+         catch (IOException e) {
+            e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (Exception e) {
