@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import javax.jms.JMSException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,7 +23,7 @@ public class FileValidator {
 
     private StatisticsList statisticsList = StatisticsList.getInstance();
 
-    public void extractHashTags(String fileRow) {
+    public void extractHashTags(String fileRow, Producer prod)  {
 
         String hashTag = "";
         while (hashTag != null) {
@@ -32,6 +33,12 @@ public class FileValidator {
                         .name(hashTag)
                         .count(1)
                         .build());
+
+                try {
+                    prod.sendMessage(hashTag);
+                } catch (JMSException e) {
+                    e.printStackTrace();
+                }
             }
             hashTag = hashTag.replace(HASH_REGEX + hashTag, "");
         }
