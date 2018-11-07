@@ -10,7 +10,7 @@ public class Database {
     private StatisticsList statisticsList;
 
     @Autowired
-    private Database() {
+    public Database() {
         statisticsList = new StatisticsList();
     }
 
