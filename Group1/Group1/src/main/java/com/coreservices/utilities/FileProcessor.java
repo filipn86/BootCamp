@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
+import javax.jms.JMSException;
+
 @Component
 public class FileProcessor {
     private static final String HEADER_FILE_NAME = "file_name";
@@ -14,7 +16,7 @@ public class FileProcessor {
         this.fl = fl;
     }
 
-    public void process(Message<String> msg) {
+    public void process(Message<String> msg) throws JMSException {
         String fileName = (String) msg.getHeaders().get(HEADER_FILE_NAME);
 
         fl.getHashTagsFromFile(fileName);

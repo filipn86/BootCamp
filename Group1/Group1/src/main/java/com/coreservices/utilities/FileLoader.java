@@ -1,10 +1,13 @@
 package com.coreservices.utilities;
 
+import activemq.Consumer;
+import activemq.Producer;
 import com.coreservices.database.Database;
 import com.coreservices.model.Statistic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.jms.JMSException;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,7 +25,7 @@ public class FileLoader {
         this.database = database;
     }
 
-    public void getHashTagsFromFile(String fileName) {
+    public void getHashTagsFromFile(String fileName) throws JMSException {
         StringBuilder builder = new StringBuilder();
 
         try (BufferedReader reader
@@ -38,8 +41,14 @@ public class FileLoader {
 
         Pattern hashTag = Pattern.compile("#([A-Za-z0-9_-]+)");
         Matcher matcher = hashTag.matcher(fileContent);
+
         while (matcher.find()) {
-            database.add(new Statistic(matcher.group()));
+
+            Producer producer = new Producer();
+            producer.producer(matcher.group());
+            Consumer consumer = new Consumer();
+            consumer.consumer();
         }
+
     }
 }

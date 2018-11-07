@@ -1,5 +1,7 @@
 package com.coreservices.model;
 
+import activemq.Consumer;
+
 import java.util.Objects;
 
 public class Statistic {
