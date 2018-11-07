@@ -1,0 +1,7 @@
+-------------------------------------------------------------------------------
+Test set: pl.coreservices.BootCampHashTag.BootCampHashTagApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.314 s <<< FAILURE! - in pl.coreservices.BootCampHashTag.BootCampHashTagApplicationTests
+initializationError(pl.coreservices.BootCampHashTag.BootCampHashTagApplicationTests)  Time elapsed: 0.006 s  <<< ERROR!
+java.lang.NoSuchMethodError: org.springframework.util.Assert.state(ZLjava/util/function/Supplier;)V
+
