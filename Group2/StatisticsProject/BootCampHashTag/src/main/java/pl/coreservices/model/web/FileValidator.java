@@ -33,16 +33,12 @@ public class FileValidator {
                         .name(hashTag)
                         .count(1)
                         .build());
-
-                try {
                     prod.sendMessage(hashTag);
-                } catch (JMSException e) {
-                    e.printStackTrace();
                 }
             }
             hashTag = hashTag.replace(HASH_REGEX + hashTag, "");
         }
-    }
+
 
     public boolean isCorrectDirectory(Path path) {
 

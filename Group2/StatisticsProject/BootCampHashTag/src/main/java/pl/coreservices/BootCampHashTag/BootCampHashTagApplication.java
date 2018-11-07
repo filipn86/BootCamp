@@ -1,33 +1,55 @@
 package pl.coreservices.BootCampHashTag;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
+import javax.jms.JMSException;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
+
+
+import pl.coreservices.amq.MessageRecieverServiceAMQ;
 import pl.coreservices.configuration.WebAppConfiguration;
-import pl.coreservices.model.web.Consumer;
-import pl.coreservices.model.web.Producer;
 import pl.coreservices.service.FileWatchService;
-
-import javax.jms.*;
-
 
 @SpringBootApplication
 @Import({WebAppConfiguration.class})
 public class BootCampHashTagApplication {
 
-	public static void main(String[] args) throws JMSException {
+	public static void main(String[] args) throws JMSException, InterruptedException  {
 		SpringApplication.run(BootCampHashTagApplication.class, args);
 
-        //Producer prod = new Producer();
-
-        //prod.sendMessage("elo");
-
+		
+		
+		MessageRecieverServiceAMQ cons = new MessageRecieverServiceAMQ();
+		
 		FileWatchService fileWatch = new FileWatchService();
+		
+		// Create two threads:
+		Thread thread1 = new Thread() {
+		    public void run() {
+		       cons.listen();
+		    }
+		};
 
-		Consumer consumer = new Consumer();
+		Thread thread2 = new Thread() {
+		    public void run() {
+		       try {
+				fileWatch.watchDirectoryPath();
+			} catch (JMSException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		    }
+		};
+		
+		// Start the threads
+		thread1.start();
+		thread2.start();
 
-		consumer.listen();
+		// Wait for them both to finish
+		thread1.join();
+		thread2.join();
+		
 
 
 	}
