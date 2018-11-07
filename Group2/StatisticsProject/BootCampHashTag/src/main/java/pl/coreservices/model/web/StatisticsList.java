@@ -34,6 +34,22 @@ public class StatisticsList {
     public void addStatistic(Statistic statistic) {
         statisticList.add(statistic);
     }
+    
+    public boolean containsStatistic(String hashtag) {
+    	for(Statistic stat: statisticList) {
+    		if(stat.getName().equals(hashtag)) return true;
+    	}
+    	return false;
+    }
+    
+    public void incrementStatistic(String hashtag) {
+    	for(Statistic stat: statisticList) {
+    		if(stat.getName().equals(hashtag)) {
+    			stat.setCount(stat.getCount()+1);
+    		}
+    	}
+    }
+    
     public void removeStatistic(Statistic statistic) {
         statisticList.remove(statistic);
     }

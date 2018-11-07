@@ -2,13 +2,16 @@ package pl.coreservices.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RestController;
-import pl.coreservices.model.web.FileValidator;
-import pl.coreservices.model.web.Producer;
 
-import javax.jms.JMSException;
+import pl.coreservices.amq.MessageSendServiceAMQ;
+import pl.coreservices.model.web.FileParser;
+
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.jms.JMSException;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 
@@ -16,19 +19,16 @@ import static java.nio.file.StandardWatchEventKinds.*;
 public class FileWatchService {
 
     @Value("${folder}")
-    private String filePath;
+    private String filePath; 
 
 
-    private FileValidator fileValidator = new FileValidator();
+    private FileParser fileParser = new FileParser();
 
     public void watchDirectoryPath() throws JMSException {
-
-        Producer prod = new Producer();
-
+    	
+    	MessageSendServiceAMQ producer = new MessageSendServiceAMQ();
+    			
         Path path = Paths.get(filePath);
-        if (!fileValidator.isCorrectDirectory(path)) {
-            return;
-        }
         System.out.println("Watching path: " + path);
         FileSystem fs = path.getFileSystem();
         try (WatchService service = fs.newWatchService()) {
@@ -38,19 +38,30 @@ public class FileWatchService {
             WatchKey key;
             while (true) {
                 key = service.take();
-                for (WatchEvent<?> watchEvent : key.pollEvents()) {
+                for (WatchEvent <?> watchEvent : key.pollEvents()) {
+                	System.out.print("File change");
                     String watchedFile = watchEvent.context().toString();
-                    List<String> hashTagList =
-                            fileValidator.parseFileRows(filePath + "\\" + watchedFile);
-                    //hashTagList.forEach(fileValidator::extractHashTags);
-                    for (String hash : hashTagList){
-                        fileValidator.extractHashTags(hash,prod);
+                    List <String> hashTagList =
+                            fileParser.parseFileRows(filePath + "\\" + watchedFile);
+                    
+                    
+                    ArrayList<String> hashtags;
+                    for(String line : hashTagList) {
+                    
+                    	hashtags = fileParser.extractHashTags(line);
+  
+                    	for(String hashtag: hashtags) {
+                    		
+                    		producer.sendMessage(hashtag);
+                    	}
                     }
+                    
+                  
+                 key.reset(); 
                 }
             }
-        }
-         catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (Exception e) {

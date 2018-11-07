@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Built-By: natalia
+Build-Jdk: 11.0.1
+Implementation-Title: BootCampHashTag
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: pl.coreservices
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-boot
+ -starter-parent/BootCampHashTag
+Created-By: Maven Integration for Eclipse
+
