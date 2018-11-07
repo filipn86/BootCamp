@@ -1,0 +1,13 @@
+pl/coreservices/model/web/Statistic.class
+pl/coreservices/model/web/Statistic$Builder.class
+pl/coreservices/web/BaseController.class
+pl/coreservices/amq/Producer.class
+pl/coreservices/service/StatisticsService.class
+pl/coreservices/amq/Consumer.class
+pl/coreservices/web/StatisticsController.class
+pl/coreservices/BootCampHashTag/BootCampHashTagApplication.class
+pl/coreservices/model/web/Statistic$1.class
+pl/coreservices/service/FileWatchService.class
+pl/coreservices/configuration/WebAppConfiguration.class
+pl/coreservices/model/web/FileValidator.class
+pl/coreservices/model/web/StatisticsList.class
